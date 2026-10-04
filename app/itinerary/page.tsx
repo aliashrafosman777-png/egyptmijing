@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { BedDouble, Check, Clock3, MapPin, Users, X } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLanguage } from '@/lib/language-context';
@@ -319,7 +318,7 @@ export default function ItineraryPage() {
           <p className="eyebrow light">{content.ctaEyebrow}</p>
           <h2>{content.ctaTitle}</h2>
           <p>{content.ctaCopy}</p>
-          <Link href="/contact" className="button gold">{content.ctaButton}</Link>
+          <a href="/contact" className="button gold">{content.ctaButton}</a>
         </div>
       </section>
     </main>

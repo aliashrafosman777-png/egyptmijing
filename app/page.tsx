@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
@@ -24,8 +23,8 @@ export default function Home() {
           <h1>{t('home.hero.h1a')}<span>{t('home.hero.h1b')}</span></h1>
           <p className="hero-copy">{t('home.hero.copy')}</p>
           <div className="hero-actions">
-            <Link href="/work" className="button gold">{t('home.hero.cta')} <ArrowUpRight size={17} aria-hidden="true" /></Link>
-            <Link href="/about" className="text-link light-link">{t('home.hero.link')} <span aria-hidden="true">→</span></Link>
+            <a href="/work" className="button gold">{t('home.hero.cta')} <ArrowUpRight size={17} aria-hidden="true" /></a>
+            <a href="/about" className="text-link light-link">{t('home.hero.link')} <span aria-hidden="true">→</span></a>
           </div>
         </div>
         <a className="scroll-cue" href="#discovery" aria-label="Scroll to discover">{t('home.hero.scroll')} <ArrowDown size={15} aria-hidden="true" /></a>
@@ -36,7 +35,7 @@ export default function Home() {
         <section className="intro-section" id="discovery">
           <div className="shell intro-grid">
             <div><p className="eyebrow">{t('home.intro.eyebrow')}</p><h2>{t('home.intro.h2a')}<br />{t('home.intro.h2b')}</h2></div>
-            <div className="intro-copy"><p>{t('home.intro.copy')}</p><Link href="/about" className="text-link">{t('home.intro.link')} <span>→</span></Link></div>
+            <div className="intro-copy"><p>{t('home.intro.copy')}</p><a href="/about" className="text-link">{t('home.intro.link')} <span>→</span></a></div>
           </div>
         </section>
 
@@ -55,7 +54,7 @@ export default function Home() {
               </article>
             ))}
           </div>
-          <div className="center-link"><Link href="/work" className="button outline-light">{t('home.journeys.viewAll')} <span>→</span></Link></div>
+          <div className="center-link"><a href="/work" className="button outline-light">{t('home.journeys.viewAll')} <span>→</span></a></div>
         </section>
 
         <section className="principles-section">

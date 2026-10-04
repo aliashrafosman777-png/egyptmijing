@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { useLanguage } from '@/lib/language-context';
 
 export function SiteFooter() {
@@ -16,12 +15,12 @@ export function SiteFooter() {
         </div>
         <div>
           <p className="footer-label">{t('footer.explore')}</p>
-          <Link href="/">{t('nav.home')}</Link><Link href="/about">{t('nav.about')}</Link><Link href="/work">{t('nav.work')}</Link><Link href="/itinerary">{t('nav.itinerary')}</Link><Link href="/contact">{t('nav.contact')}</Link>
+          <a href="/">{t('nav.home')}</a><a href="/about">{t('nav.about')}</a><a href="/work">{t('nav.work')}</a><a href="/itinerary">{t('nav.itinerary')}</a><a href="/contact">{t('nav.contact')}</a>
         </div>
         <div>
           <p className="footer-label">{t('footer.begin')}</p>
           <p className="footer-note">{t('footer.beginNote')}</p>
-          <Link href="/contact" className="text-link footer-link">{t('footer.planLink')} <span>→</span></Link>
+          <a href="/contact" className="text-link footer-link">{t('footer.planLink')} <span>→</span></a>
         </div>
       </div>
       <div className="shell footer-base">
