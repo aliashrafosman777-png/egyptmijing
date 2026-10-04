@@ -1,14 +1,36 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
+'use client';
 
-export const metadata: Metadata = { title: 'Contact' };
+import { MessageCircle } from 'lucide-react';
+import { useLanguage } from '@/lib/language-context';
 
 export default function ContactPage() {
+  const { t } = useLanguage();
+
   return (
     <main>
-      <section className="contact-hero"><div className="contact-symbol" aria-hidden="true">𓂀</div><div className="shell contact-grid"><div><p className="eyebrow light">Begin a conversation</p><h1>Where is Egypt<br /><span>calling you?</span></h1></div><div className="contact-intro"><p>Tell us what you are curious about, how you like to travel, and the pace that feels right. The first conversation is simply a chance to listen.</p><a href="mailto:hello@egypthiddenwonders.com" className="button gold">Write to us <ArrowUpRight size={17} /></a></div></div></section>
-      <section className="contact-details"><div className="shell"><div className="contact-rule"><span>01</span><div><h2>Bring an idea</h2><p>A place, a date, a private milestone, or a question you cannot stop thinking about.</p></div></div><div className="contact-rule"><span>02</span><div><h2>We listen</h2><p>We learn what matters to you before suggesting a route or rhythm.</p></div></div><div className="contact-rule"><span>03</span><div><h2>We shape the journey</h2><p>Details arrive only after the purpose of the journey is clear.</p></div></div><div className="contact-note"><p>Prefer to explore first?</p><Link href="/work" className="text-link">View selected journeys <span>→</span></Link></div></div></section>
+      <section className="contact-hero"><div className="contact-symbol" aria-hidden="true">𓂀</div><div className="shell contact-grid contact-grid-solo"><div><p className="eyebrow light">{t('contact.hero.eyebrow')}</p><h1>{t('contact.hero.h1a')}<br /><span>{t('contact.hero.h1b')}</span></h1></div></div></section>
+      <section className="contact-line-section">
+        <div className="shell">
+          <a
+            className="line-contact-card"
+            href="https://lin.ee/VHouqpp"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t('contact.line.aria')}
+          >
+            <div className="line-contact-copy">
+              <p className="eyebrow light">{t('contact.line.eyebrow')}</p>
+              <h2>{t('contact.line.h2')}</h2>
+              <p>{t('contact.line.copy')}</p>
+              <span className="line-contact-action">
+                <span className="line-contact-icon" aria-hidden="true"><MessageCircle size={21} strokeWidth={1.8} /></span>
+                {t('contact.line.cta')}
+              </span>
+            </div>
+            <span className="line-contact-wordmark" aria-hidden="true">LINE</span>
+          </a>
+        </div>
+      </section>
     </main>
   );
 }

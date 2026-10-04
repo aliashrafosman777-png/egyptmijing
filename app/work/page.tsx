@@ -1,23 +1,25 @@
-import type { Metadata } from 'next';
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { useLanguage } from '@/lib/language-context';
 
-export const metadata: Metadata = { title: 'Work' };
-
-const work = [
-  { title: 'Siwa, Slowly', kicker: 'Oasis · Culture · Desert', image: '/images/siwa-palms.webp', text: 'Move from palm-shaded lanes and Amazigh traditions to the salt lakes and towering dunes of the Great Sand Sea.' },
-  { title: 'Sculpted by Silence', kicker: 'White Desert · Camp · Stars', image: '/images/white-desert.webp', text: 'Cross the chalk wilderness between Bahariya and Farafra, ending each day beneath an immense desert sky.' },
-  { title: 'The Colour of Eternity', kicker: 'Dendera · Qena · Nile Valley', image: '/images/dendera-ceiling.webp', text: 'Trace symbols, astronomy, and sacred architecture inside one of Egypt’s most vividly preserved temple interiors.' },
+const workKeys = [
+  { titleKey: 'work.abusimbel.title', kickerKey: 'work.abusimbel.kicker', image: '/images/abu-simbel.jpeg', textKey: 'work.abusimbel.text' },
+  { titleKey: 'work.silence.title', kickerKey: 'work.silence.kicker', image: '/images/white-desert-new.jpeg', textKey: 'work.silence.text' },
+  { titleKey: 'work.pyramids.title', kickerKey: 'work.pyramids.kicker', image: '/images/the-pyramids.jpeg', textKey: 'work.pyramids.text' },
 ];
 
 export default function WorkPage() {
+  const { t } = useLanguage();
+
   return (
     <main>
-      <section className="page-hero work-hero"><div className="orb" /><div className="shell page-hero-inner"><p className="eyebrow light">Selected journeys</p><h1>Routes drawn<br /><span>by curiosity.</span></h1><p>Three starting points. Every final journey is shaped around the traveller.</p></div></section>
+      <section className="page-hero work-hero"><div className="orb" /><div className="shell page-hero-inner"><p className="eyebrow light">{t('work.hero.eyebrow')}</p><h1>{t('work.hero.h1a')}<br /><span>{t('work.hero.h1b')}</span></h1><p>{t('work.hero.copy')}</p></div></section>
       <section className="work-list shell">
-        {work.map((item, index) => <article className="work-item" key={item.title}><div className="work-image"><Image src={item.image} alt={item.title} fill sizes="(max-width: 800px) 100vw, 52vw" /></div><div className="work-copy"><span className="work-no">0{index + 1}</span><p className="eyebrow">{item.kicker}</p><h2>{item.title}</h2><p>{item.text}</p><Link href="/contact" className="text-link">Shape this journey <span>→</span></Link></div></article>)}
+        {workKeys.map((item, index) => <article className="work-item" key={item.titleKey}><div className="work-image"><Image src={item.image} alt={t(item.titleKey)} fill sizes="(max-width: 800px) 100vw, 60vw" quality={100} unoptimized /></div><div className="work-copy"><span className="work-no">0{index + 1}</span><p className="eyebrow">{t(item.kickerKey)}</p><h2>{t(item.titleKey)}</h2><p>{t(item.textKey)}</p><Link href="/contact" className="text-link">{t('work.shapeLink')} <span>→</span></Link></div></article>)}
       </section>
-      <section className="bespoke-banner"><div className="shell"><p className="eyebrow light">Bespoke by nature</p><h2>No fixed path.<br />No borrowed itinerary.</h2><p>Begin with a place, a fascination, or simply a feeling. We shape the route from there.</p><Link href="/contact" className="button gold">Tell us what moves you <span>↗</span></Link></div></section>
+      <section className="bespoke-banner"><div className="shell"><p className="eyebrow light">{t('work.bespoke.eyebrow')}</p><h2>{t('work.bespoke.h2a')}<br />{t('work.bespoke.h2b')}</h2><p>{t('work.bespoke.copy')}</p><Link href="/contact" className="button gold">{t('work.bespoke.cta')} <span>↗</span></Link></div></section>
     </main>
   );
 }

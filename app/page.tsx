@@ -1,69 +1,75 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
-
-const journeys = [
-  { place: 'Siwa Oasis', label: 'Desert sanctuary', image: '/images/siwa-palms.webp', note: 'Palm groves, salt lakes, old Shali, and the immense quiet of the Great Sand Sea.' },
-  { place: 'The White Desert', label: 'Elemental landscape', image: '/images/white-desert.webp', note: 'A private passage through wind-carved chalk, starlit camps, and Western Desert silence.' },
-  { place: 'Dendera', label: 'Sacred architecture', image: '/images/dendera-ceiling.webp', note: 'Colour, cosmology, and living memory beneath the monumental ceiling of Hathor.' },
-];
+import { useLanguage } from '@/lib/language-context';
 
 export default function Home() {
+  const { t } = useLanguage();
+
+  const journeys = [
+    { placeKey: 'home.journey.siwa.place', labelKey: 'home.journey.siwa.label', image: '/images/siwa-palms.webp', noteKey: 'home.journey.siwa.note' },
+    { placeKey: 'home.journey.white.place', labelKey: 'home.journey.white.label', image: '/images/white-desert.webp', noteKey: 'home.journey.white.note' },
+    { placeKey: 'home.journey.dendera.place', labelKey: 'home.journey.dendera.label', image: '/images/dendera-ceiling.webp', noteKey: 'home.journey.dendera.note' },
+  ];
+
   return (
     <main>
       <section className="hero">
         <Image src="/images/siwa-palms.webp" alt="Siwa Oasis at sunset, with palm groves below the desert plateau" fill priority className="hero-image" sizes="100vw" />
         <div className="hero-shade" /><div className="hero-grain" />
         <div className="hero-content shell">
-          <p className="eyebrow light">Private cultural journeys · Egypt</p>
-          <h1>Beyond the known.<span>Into the extraordinary.</span></h1>
-          <p className="hero-copy">Thoughtful journeys into the landscapes, stories, and living traditions that most visitors never reach.</p>
+          <p className="eyebrow light">{t('home.hero.eyebrow')}</p>
+          <h1>{t('home.hero.h1a')}<span>{t('home.hero.h1b')}</span></h1>
+          <p className="hero-copy">{t('home.hero.copy')}</p>
           <div className="hero-actions">
-            <Link href="/work" className="button gold">Explore our journeys <ArrowUpRight size={17} aria-hidden="true" /></Link>
-            <Link href="/about" className="text-link light-link">Our approach <span aria-hidden="true">→</span></Link>
+            <Link href="/work" className="button gold">{t('home.hero.cta')} <ArrowUpRight size={17} aria-hidden="true" /></Link>
+            <Link href="/about" className="text-link light-link">{t('home.hero.link')} <span aria-hidden="true">→</span></Link>
           </div>
         </div>
-        <a className="scroll-cue" href="#discovery" aria-label="Scroll to discover">Discover <ArrowDown size={15} aria-hidden="true" /></a>
-        <div className="hero-index" aria-hidden="true">01 / 03</div>
+        <a className="scroll-cue" href="#discovery" aria-label="Scroll to discover">{t('home.hero.scroll')} <ArrowDown size={15} aria-hidden="true" /></a>
+        <div className="hero-index" aria-hidden="true">{t('home.hero.index')}</div>
       </section>
 
-      <section className="intro-section" id="discovery">
-        <div className="shell intro-grid">
-          <div><p className="eyebrow">The Egypt between the lines</p><h2>Not a checklist.<br />A way of seeing.</h2></div>
-          <div className="intro-copy"><p>We reveal Egypt through intimate encounters and unhurried exploration: desert paths, sacred chambers, family tables, and stories carried forward by the people who call these places home.</p><Link href="/about" className="text-link">Discover our story <span>→</span></Link></div>
-        </div>
-      </section>
-
-      <section className="journeys-section">
-        <div className="shell section-heading">
-          <div><p className="eyebrow light">Three ways into wonder</p><h2>Begin somewhere unexpected.</h2></div>
-          <p>Each journey is shaped around place, pace, and the kind of memory that cannot be scheduled.</p>
-        </div>
-        <div className="journey-list">
-          {journeys.map((journey, index) => (
-            <article className="journey-card" key={journey.place}>
-              <Image src={journey.image} alt={journey.place} fill sizes="(max-width: 760px) 100vw, 34vw" />
-              <div className="journey-overlay" />
-              <span className="journey-number">0{index + 1}</span>
-              <div className="journey-copy"><p>{journey.label}</p><h3>{journey.place}</h3><span>{journey.note}</span></div>
-            </article>
-          ))}
-        </div>
-        <div className="center-link"><Link href="/work" className="button outline-light">View all journeys <span>→</span></Link></div>
-      </section>
-
-      <section className="principles-section">
-        <div className="shell principles-grid">
-          <div><p className="eyebrow">Our compass</p><h2>Travel with reverence.</h2></div>
-          <div className="principles-list">
-            <div><span>01</span><h3>Authentic access</h3><p>Encounters rooted in place, guided by people with genuine knowledge and connection.</p></div>
-            <div><span>02</span><h3>Considered pace</h3><p>Fewer stops, deeper attention, and enough space for the unexpected to become the story.</p></div>
-            <div><span>03</span><h3>Living heritage</h3><p>Respect for the landscapes, communities, and traditions that make every journey possible.</p></div>
+      <div className="home-story">
+        <section className="intro-section" id="discovery">
+          <div className="shell intro-grid">
+            <div><p className="eyebrow">{t('home.intro.eyebrow')}</p><h2>{t('home.intro.h2a')}<br />{t('home.intro.h2b')}</h2></div>
+            <div className="intro-copy"><p>{t('home.intro.copy')}</p><Link href="/about" className="text-link">{t('home.intro.link')} <span>→</span></Link></div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="closing-cta"><div className="shell"><p className="eyebrow light">Your Egypt, revealed</p><h2>Follow the eye<br />beyond the horizon.</h2><Link href="/contact" className="button gold">Begin a conversation <ArrowUpRight size={17} /></Link></div></section>
+        <section className="journeys-section">
+          <div className="shell section-heading">
+            <div><p className="eyebrow light">{t('home.journeys.eyebrow')}</p><h2>{t('home.journeys.h2')}</h2></div>
+            <p>{t('home.journeys.copy')}</p>
+          </div>
+          <div className="journey-list">
+            {journeys.map((journey, index) => (
+              <article className="journey-card" key={journey.placeKey}>
+                <Image src={journey.image} alt={t(journey.placeKey)} fill sizes="(max-width: 760px) 100vw, 34vw" />
+                <div className="journey-overlay" />
+                <span className="journey-number">0{index + 1}</span>
+                <div className="journey-copy"><p>{t(journey.labelKey)}</p><h3>{t(journey.placeKey)}</h3><span>{t(journey.noteKey)}</span></div>
+              </article>
+            ))}
+          </div>
+          <div className="center-link"><Link href="/work" className="button outline-light">{t('home.journeys.viewAll')} <span>→</span></Link></div>
+        </section>
+
+        <section className="principles-section">
+          <div className="shell principles-grid">
+            <div><p className="eyebrow">{t('home.principles.eyebrow')}</p><h2>{t('home.principles.h2')}</h2></div>
+            <div className="principles-list">
+              <div><span>01</span><h3>{t('home.principles.1.h3')}</h3><p>{t('home.principles.1.p')}</p></div>
+              <div><span>02</span><h3>{t('home.principles.2.h3')}</h3><p>{t('home.principles.2.p')}</p></div>
+              <div><span>03</span><h3>{t('home.principles.3.h3')}</h3><p>{t('home.principles.3.p')}</p></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
     </main>
   );
 }
