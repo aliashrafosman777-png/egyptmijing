@@ -2,21 +2,34 @@
 
 import Image from 'next/image';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useLanguage } from '@/lib/language-context';
+import type { ManagedContent, SiteImages } from '@/lib/managed-content-types';
+import { defaultSiteImages } from '@/lib/site-images-defaults';
 
 export default function Home() {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
+  const [siteImages, setSiteImages] = useState<SiteImages>(defaultSiteImages);
+
+  useEffect(() => {
+    fetch('/api/content', { cache: 'no-store' })
+      .then((response) => response.ok ? response.json() as Promise<ManagedContent> : null)
+      .then((content) => { if (content?.siteImages) setSiteImages(content.siteImages); })
+      .catch(() => undefined);
+  }, []);
+
+  const language = locale === 'zh-TW' ? 'zhTW' : 'en';
 
   const journeys = [
-    { placeKey: 'home.journey.siwa.place', labelKey: 'home.journey.siwa.label', image: '/images/siwa-palms.webp', noteKey: 'home.journey.siwa.note' },
-    { placeKey: 'home.journey.white.place', labelKey: 'home.journey.white.label', image: '/images/white-desert.webp', noteKey: 'home.journey.white.note' },
-    { placeKey: 'home.journey.dendera.place', labelKey: 'home.journey.dendera.label', image: '/images/dendera-ceiling.webp', noteKey: 'home.journey.dendera.note' },
+    { id: 'siwa-oasis', placeKey: 'home.journey.siwa.place', labelKey: 'home.journey.siwa.label', noteKey: 'home.journey.siwa.note' },
+    { id: 'white-desert', placeKey: 'home.journey.white.place', labelKey: 'home.journey.white.label', noteKey: 'home.journey.white.note' },
+    { id: 'dendera', placeKey: 'home.journey.dendera.place', labelKey: 'home.journey.dendera.label', noteKey: 'home.journey.dendera.note' },
   ];
 
   return (
     <main>
       <section className="hero">
-        <Image src="/images/siwa-palms.webp" alt="Siwa Oasis at sunset, with palm groves below the desert plateau" fill priority className="hero-image" sizes="100vw" />
+        <Image src={siteImages.homeHero.image} alt={siteImages.homeHero.imageAlt[language]} fill priority className="hero-image" sizes="100vw" unoptimized />
         <div className="hero-shade" /><div className="hero-grain" />
         <div className="hero-content shell">
           <p className="eyebrow light">{t('home.hero.eyebrow')}</p>
@@ -47,7 +60,13 @@ export default function Home() {
           <div className="journey-list">
             {journeys.map((journey, index) => (
               <article className="journey-card" key={journey.placeKey}>
-                <Image src={journey.image} alt={t(journey.placeKey)} fill sizes="(max-width: 760px) 100vw, 34vw" />
+                <Image
+                  src={siteImages.homeJourneys.find((item) => item.id === journey.id)?.image ?? defaultSiteImages.homeJourneys[index].image}
+                  alt={siteImages.homeJourneys.find((item) => item.id === journey.id)?.imageAlt[language] ?? t(journey.placeKey)}
+                  fill
+                  sizes="(max-width: 760px) 100vw, 34vw"
+                  unoptimized
+                />
                 <div className="journey-overlay" />
                 <span className="journey-number">0{index + 1}</span>
                 <div className="journey-copy"><p>{t(journey.labelKey)}</p><h3>{t(journey.placeKey)}</h3><span>{t(journey.noteKey)}</span></div>

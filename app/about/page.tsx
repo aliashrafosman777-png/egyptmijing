@@ -2,10 +2,24 @@
 
 import Image from 'next/image';
 import { Play } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useLanguage } from '@/lib/language-context';
+import type { ManagedContent, ManagedImageAsset, SiteImages } from '@/lib/managed-content-types';
+import { defaultSiteImages } from '@/lib/site-images-defaults';
 
 export default function AboutPage() {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
+  const [siteImages, setSiteImages] = useState<SiteImages>(defaultSiteImages);
+
+  useEffect(() => {
+    fetch('/api/content', { cache: 'no-store' })
+      .then((response) => response.ok ? response.json() as Promise<ManagedContent> : null)
+      .then((content) => { if (content?.siteImages) setSiteImages(content.siteImages); })
+      .catch(() => undefined);
+  }, []);
+
+  const language = locale === 'zh-TW' ? 'zhTW' : 'en';
+  const guideImage = (id: string): ManagedImageAsset => siteImages.aboutGuides.find((item) => item.id === id) ?? defaultSiteImages.aboutGuides.find((item) => item.id === id)!;
 
   return (
     <main>
@@ -29,10 +43,11 @@ export default function AboutPage() {
             <article className="team-profile">
               <div className="team-portrait">
                 <Image
-                  src="/images/emad-monochrome.png"
-                  alt={t('about.team.imageAlt')}
+                  src={guideImage('emad').image}
+                  alt={guideImage('emad').imageAlt[language] || t('about.team.imageAlt')}
                   fill
                   sizes="(max-width: 720px) 100vw, 33vw"
+                  unoptimized
                 />
                 <span className="team-number">01</span>
               </div>
@@ -52,10 +67,11 @@ export default function AboutPage() {
             <article className="team-profile">
               <div className="team-portrait">
                 <Image
-                  src="/images/hashim-monochrome.png"
-                  alt={t('about.team.hashim.imageAlt')}
+                  src={guideImage('hashim').image}
+                  alt={guideImage('hashim').imageAlt[language] || t('about.team.hashim.imageAlt')}
                   fill
                   sizes="(max-width: 720px) 100vw, 33vw"
+                  unoptimized
                 />
                 <span className="team-number">02</span>
               </div>
@@ -73,10 +89,11 @@ export default function AboutPage() {
             <article className="team-profile team-profile-narrative" id="li-jian">
               <div className="team-portrait">
                 <Image
-                  src="/images/li-jian-profile.jpeg"
-                  alt={t('about.team.lijian.imageAlt')}
+                  src={guideImage('li-jian').image}
+                  alt={guideImage('li-jian').imageAlt[language] || t('about.team.lijian.imageAlt')}
                   fill
                   sizes="(max-width: 720px) 100vw, 33vw"
+                  unoptimized
                 />
                 <span className="team-number">03</span>
               </div>

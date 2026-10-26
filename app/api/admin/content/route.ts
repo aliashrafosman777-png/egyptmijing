@@ -10,7 +10,7 @@ export async function GET() {
 export async function PUT(request: Request) {
   if (!await getAdminSession()) return Response.json({ message: 'Unauthorized' }, { status: 401 });
   const body = await request.json().catch(() => null) as ManagedContent | null;
-  if (!body || body.version !== 1 || (body.work !== null && !Array.isArray(body.work)) || (body.itineraries !== null && typeof body.itineraries !== 'object')) {
+  if (!body || body.version !== 1 || (body.work !== null && !Array.isArray(body.work)) || (body.itineraries !== null && typeof body.itineraries !== 'object') || (body.siteImages !== null && typeof body.siteImages !== 'object')) {
     return Response.json({ message: 'Invalid content.' }, { status: 400 });
   }
   const size = new TextEncoder().encode(JSON.stringify(body)).length;

@@ -8,7 +8,7 @@ const LOCAL_DIR = path.join(process.cwd(), 'data');
 const LOCAL_FILE = path.join(LOCAL_DIR, 'site-content.json');
 
 function emptyContent(): ManagedContent {
-  return { version: 1, updatedAt: new Date(0).toISOString(), work: null, itineraries: null };
+  return { version: 1, updatedAt: new Date(0).toISOString(), work: null, itineraries: null, siteImages: null };
 }
 
 function hasBlob(): boolean {
@@ -23,6 +23,7 @@ function parseContent(value: string): ManagedContent {
     updatedAt: typeof parsed.updatedAt === 'string' ? parsed.updatedAt : new Date().toISOString(),
     work: Array.isArray(parsed.work) ? parsed.work : null,
     itineraries: parsed.itineraries && typeof parsed.itineraries === 'object' ? parsed.itineraries : null,
+    siteImages: parsed.siteImages && typeof parsed.siteImages === 'object' ? parsed.siteImages : null,
   };
 }
 

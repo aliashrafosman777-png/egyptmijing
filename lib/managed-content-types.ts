@@ -15,9 +15,22 @@ export type WorkPlace = {
   isPublished: boolean;
 };
 
+export type ManagedImageAsset = {
+  id: string;
+  image: string;
+  imageAlt: LocalizedText;
+};
+
+export type SiteImages = {
+  homeHero: ManagedImageAsset;
+  homeJourneys: ManagedImageAsset[];
+  aboutGuides: ManagedImageAsset[];
+};
+
 export type ManagedContent = {
   version: 1;
   updatedAt: string;
   work: WorkPlace[] | null;
   itineraries: ManagedItineraries | null;
+  siteImages: SiteImages | null;
 };

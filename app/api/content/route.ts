@@ -13,6 +13,6 @@ export async function GET() {
     };
     return Response.json(publicContent, { headers: { 'Cache-Control': 'no-store' } });
   } catch {
-    return Response.json({ version: 1, work: null, itineraries: null }, { headers: { 'Cache-Control': 'no-store' } });
+    return Response.json({ version: 1, work: null, itineraries: null, siteImages: null }, { headers: { 'Cache-Control': 'no-store' } });
   }
 }

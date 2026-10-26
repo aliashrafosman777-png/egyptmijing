@@ -1,6 +1,6 @@
 # Egypt Hidden Wonders content studio
 
-The private content studio is available at `/admin`. It manages only the Work places and Itinerary journeys.
+The private content studio is available at `/admin`. It manages Work places, Itinerary journeys, and selected page photography: the Home hero, the three Home journey cards, and the three About guide portraits.
 
 Content is stored as one private JSON document in Vercel Blob. Uploaded images are also private Blob objects and are served through the website's image endpoint. Local development uses the ignored `data/` directory instead.
 
@@ -30,7 +30,8 @@ Never commit the plain password, generated hash, session secret, Blob token, `.e
 ## Editing workflow
 
 - Sign in at `/admin`.
-- Choose **Work places** or **Journeys**.
+- Choose **Page images**, **Work places**, or **Journeys**.
+- Page images have a fixed structure: replace the image and maintain its English and Traditional Chinese accessibility description.
 - Edit English and Traditional Chinese content independently.
 - New items start as drafts. Turn on **Visible on website** when ready.
 - Select **Publish changes** to update the public website.

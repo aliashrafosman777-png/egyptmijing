@@ -4,14 +4,15 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { ArrowDown, ArrowUp, ExternalLink, ImagePlus, LogOut, Map, MapPinned, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
-import type { ManagedContent, WorkPlace } from '@/lib/managed-content-types';
+import { ArrowDown, ArrowUp, ExternalLink, Images, ImagePlus, LogOut, Map, MapPinned, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
+import type { ManagedContent, SiteImages, WorkPlace } from '@/lib/managed-content-types';
 import type { Day, Journey, ManagedItineraries } from '@/lib/itinerary-types';
 import { defaultWorkPlaces } from '@/lib/work-defaults';
 import { english, traditionalChinese } from '@/lib/itinerary-defaults';
 import { prepareContentUpload } from '@/lib/prepare-content-upload';
+import { defaultSiteImages } from '@/lib/site-images-defaults';
 
-type Section = 'work' | 'itineraries';
+type Section = 'pageImages' | 'work' | 'itineraries';
 type LocaleKey = 'en' | 'zhTW';
 
 function clone<T>(value: T): T { return JSON.parse(JSON.stringify(value)) as T; }
@@ -39,7 +40,8 @@ function ImagePicker({ src, alt, onUpload, uploading }: { src: string; alt: stri
 }
 
 export function AdminDashboard() {
-  const [section, setSection] = useState<Section>('work');
+  const [section, setSection] = useState<Section>('pageImages');
+  const [siteImages, setSiteImages] = useState<SiteImages>(clone(defaultSiteImages));
   const [work, setWork] = useState<WorkPlace[]>(clone(defaultWorkPlaces));
   const [itineraries, setItineraries] = useState<ManagedItineraries>({ en: clone(english), zhTW: clone(traditionalChinese) });
   const [updatedAt, setUpdatedAt] = useState('');
@@ -60,15 +62,16 @@ export function AdminDashboard() {
         setAdminEmail(session.email);
         if (content.work) setWork(content.work);
         if (content.itineraries) setItineraries(content.itineraries);
+        if (content.siteImages) setSiteImages(content.siteImages);
         setUpdatedAt(content.updatedAt);
       })
       .catch(() => setError('Unable to load the content studio.'))
       .finally(() => setLoading(false));
   }, []);
 
-  async function save(nextWork = work, nextItineraries = itineraries) {
+  async function save(nextWork = work, nextItineraries = itineraries, nextSiteImages = siteImages) {
     setSaving(true); setError(''); setMessage('');
-    const payload: ManagedContent = { version: 1, updatedAt: new Date().toISOString(), work: nextWork, itineraries: nextItineraries };
+    const payload: ManagedContent = { version: 1, updatedAt: new Date().toISOString(), work: nextWork, itineraries: nextItineraries, siteImages: nextSiteImages };
     try {
       const response = await fetch('/api/admin/content', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       const result = await response.json() as { message?: string; updatedAt?: string };
@@ -88,18 +91,60 @@ export function AdminDashboard() {
     <main className="admin-shell">
       <aside className="admin-sidebar">
         <a href="/" className="admin-sidebar-brand"><Image src="/brand/egypt-hidden-wonders-emblem.png" alt="Egypt Hidden Wonders" width={62} height={62} /><span>Content<br />Studio</span></a>
-        <nav><button className={section === 'work' ? 'is-active' : ''} onClick={() => setSection('work')}><MapPinned size={19} />Work places</button><button className={section === 'itineraries' ? 'is-active' : ''} onClick={() => setSection('itineraries')}><Map size={19} />Journeys</button></nav>
+        <nav><button className={section === 'pageImages' ? 'is-active' : ''} onClick={() => setSection('pageImages')}><Images size={19} />Page images</button><button className={section === 'work' ? 'is-active' : ''} onClick={() => setSection('work')}><MapPinned size={19} />Work places</button><button className={section === 'itineraries' ? 'is-active' : ''} onClick={() => setSection('itineraries')}><Map size={19} />Journeys</button></nav>
         <div className="admin-sidebar-foot"><span>{adminEmail}</span><button onClick={logout}><LogOut size={17} />Sign out</button></div>
       </aside>
 
       <section className="admin-main">
-        <header className="admin-topbar"><div><p className="admin-kicker">Egypt Hidden Wonders</p><h1>{section === 'work' ? 'Work places' : 'Journeys'}</h1><p>{section === 'work' ? 'Curate the places shown on the Work page.' : 'Edit routes, daily plans, prices, and journey imagery.'}</p></div><div className="admin-top-actions"><a href={section === 'work' ? '/work' : '/itinerary'} target="_blank" rel="noreferrer">View live page <ExternalLink size={15} /></a><button className="admin-primary" onClick={() => save()} disabled={saving}><Save size={17} />{saving ? 'Publishing…' : 'Publish changes'}</button></div></header>
+        <header className="admin-topbar"><div><p className="admin-kicker">Egypt Hidden Wonders</p><h1>{section === 'pageImages' ? 'Page images' : section === 'work' ? 'Work places' : 'Journeys'}</h1><p>{section === 'pageImages' ? 'Replace selected photography across the Home and About pages.' : section === 'work' ? 'Curate the places shown on the Work page.' : 'Edit routes, daily plans, prices, and journey imagery.'}</p></div><div className="admin-top-actions"><a href={section === 'pageImages' ? '/' : section === 'work' ? '/work' : '/itinerary'} target="_blank" rel="noreferrer">View live page <ExternalLink size={15} /></a><button className="admin-primary" onClick={() => save()} disabled={saving}><Save size={17} />{saving ? 'Publishing…' : 'Publish changes'}</button></div></header>
         {(message || error) && <div className={`admin-notice${error ? ' is-error' : ''}`}>{error || message}<button onClick={() => { setError(''); setMessage(''); }}><X size={16} /></button></div>}
-        <div className="admin-meta"><span>{section === 'work' ? `${work.length} places` : `${itineraries.en.journeys.length} journeys`}</span><span>{updatedAt && new Date(updatedAt).getTime() > 0 ? `Last published ${new Date(updatedAt).toLocaleString()}` : 'Using original website content'}</span></div>
-        {section === 'work' ? <WorkManager items={work} setItems={setWork} editor={workEditor} setEditor={setWorkEditor} setError={setError} /> : <JourneyManager data={itineraries} setData={setItineraries} editor={journeyEditor} setEditor={setJourneyEditor} setError={setError} />}
+        <div className="admin-meta"><span>{section === 'pageImages' ? '7 managed images' : section === 'work' ? `${work.length} places` : `${itineraries.en.journeys.length} journeys`}</span><span>{updatedAt && new Date(updatedAt).getTime() > 0 ? `Last published ${new Date(updatedAt).toLocaleString()}` : 'Using original website content'}</span></div>
+        {section === 'pageImages' ? <PageImagesManager data={siteImages} setData={setSiteImages} setError={setError} /> : section === 'work' ? <WorkManager items={work} setItems={setWork} editor={workEditor} setEditor={setWorkEditor} setError={setError} /> : <JourneyManager data={itineraries} setData={setItineraries} editor={journeyEditor} setEditor={setJourneyEditor} setError={setError} />}
       </section>
     </main>
   );
+}
+
+function PageImagesManager({ data, setData, setError }: { data: SiteImages; setData: (data: SiteImages) => void; setError: (value: string) => void }) {
+  const [locale, setLocale] = useState<LocaleKey>('en');
+  const [uploading, setUploading] = useState('');
+
+  function patchHero(patch: Partial<SiteImages['homeHero']>) {
+    setData({ ...data, homeHero: { ...data.homeHero, ...patch } });
+  }
+
+  function patchList(list: 'homeJourneys' | 'aboutGuides', itemId: string, patch: Partial<SiteImages[typeof list][number]>) {
+    setData({ ...data, [list]: data[list].map((item) => item.id === itemId ? { ...item, ...patch } : item) });
+  }
+
+  async function image(key: string, file: File, update: (url: string) => void) {
+    setUploading(key); setError('');
+    try { update(await uploadImage(file)); }
+    catch (reason) { setError(reason instanceof Error ? reason.message : 'Upload failed.'); }
+    finally { setUploading(''); }
+  }
+
+  const journeyNames: Record<string, string> = { 'siwa-oasis': 'Siwa Oasis', 'white-desert': 'The White Desert', dendera: 'Dendera' };
+  const guideNames: Record<string, string> = { emad: 'Emad · Li Jian', hashim: 'Hashim · Gao Ming', 'li-jian': 'Li Jian' };
+
+  return <div className="admin-manager admin-page-images">
+    <div className="admin-image-manager-head"><div><h2>Selected page photography</h2><p>Upload JPG, PNG, or WebP images. They are optimized automatically before publishing.</p></div><LocaleTabs value={locale} onChange={setLocale} /></div>
+
+    <section className="admin-image-section">
+      <div className="admin-image-section-head"><div><p className="admin-kicker">Home page</p><h2>Hero image</h2></div><span>01 image</span></div>
+      <div className="admin-image-grid is-hero"><article className="admin-image-tile"><h3>Home hero</h3><ImagePicker src={data.homeHero.image} alt={data.homeHero.imageAlt[locale]} uploading={uploading === data.homeHero.id} onUpload={(file) => image(data.homeHero.id, file, (url) => patchHero({ image: url }))} /><Field label={`Image description · ${locale === 'en' ? 'English' : '繁體中文'}`} value={data.homeHero.imageAlt[locale]} onChange={(value) => patchHero({ imageAlt: { ...data.homeHero.imageAlt, [locale]: value } })} /></article></div>
+    </section>
+
+    <section className="admin-image-section">
+      <div className="admin-image-section-head"><div><p className="admin-kicker">Home page</p><h2>Three ways into wonder</h2></div><span>03 images</span></div>
+      <div className="admin-image-grid">{data.homeJourneys.map((asset) => <article className="admin-image-tile" key={asset.id}><h3>{journeyNames[asset.id] || asset.id}</h3><ImagePicker src={asset.image} alt={asset.imageAlt[locale]} uploading={uploading === `journey-${asset.id}`} onUpload={(file) => image(`journey-${asset.id}`, file, (url) => patchList('homeJourneys', asset.id, { image: url }))} /><Field label={`Image description · ${locale === 'en' ? 'English' : '繁體中文'}`} value={asset.imageAlt[locale]} onChange={(value) => patchList('homeJourneys', asset.id, { imageAlt: { ...asset.imageAlt, [locale]: value } })} /></article>)}</div>
+    </section>
+
+    <section className="admin-image-section">
+      <div className="admin-image-section-head"><div><p className="admin-kicker">About page</p><h2>Meet your guides</h2></div><span>03 images</span></div>
+      <div className="admin-image-grid">{data.aboutGuides.map((asset) => <article className="admin-image-tile" key={asset.id}><h3>{guideNames[asset.id] || asset.id}</h3><ImagePicker src={asset.image} alt={asset.imageAlt[locale]} uploading={uploading === `guide-${asset.id}`} onUpload={(file) => image(`guide-${asset.id}`, file, (url) => patchList('aboutGuides', asset.id, { image: url }))} /><Field label={`Image description · ${locale === 'en' ? 'English' : '繁體中文'}`} value={asset.imageAlt[locale]} onChange={(value) => patchList('aboutGuides', asset.id, { imageAlt: { ...asset.imageAlt, [locale]: value } })} /></article>)}</div>
+    </section>
+  </div>;
 }
 
 function WorkManager({ items, setItems, editor, setEditor, setError }: { items: WorkPlace[]; setItems: (items: WorkPlace[]) => void; editor: number | null; setEditor: (index: number | null) => void; setError: (value: string) => void }) {
